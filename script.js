@@ -1,5 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const expressionInput = document.getElementById('expressionInput');
+    const evaluateBtn = document.getElementById('evaluateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const resultValueDisplay = document.getElementById('resultValue');
+    const errorMessage = document.getElementById('errorMessage');
+    const stepsSection = document.getElementById('stepsSection');
+    const stepsHeader = document.getElementById('stepsHeader');
+    const stepsToggle = document.getElementById('stepsToggle');
+    const stepsContent = document.getElementById('stepsContent');
+    const stepsList = document.getElementById('stepsList');
+    const historyList = document.getElementById('historyList');
+    const clearHistory = document.getElementById('clearHistory');
 
     // function to validate the input expression
     function validateExpression(expression) {
@@ -49,5 +62,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return { valid: true, error: null };
 
+    }
+
+
+    // function to tokenize the input expression
+    function tokenize(expression) {
+        const tokens = [];
+        const cleanExpression = expression.replace(/\s+/g, '');
+        let currentNumber = '';
+
+        for (let i = 0; i < cleanExpression.length; i++) {
+            const char = cleanExpression[i];
+
+            if (char >= '0' && char <= '9' || char === '.') {
+                currentNumber += char;
+            } else {
+                if (currentNumber !== '') {
+                    tokens.push({ type: 'number', value: parseFloat(currentNumber) });
+                    currentNumber = '';
+                }
+
+                if (char === '+' || char === '-' || char === '*' || char === '/') {
+                    tokens.push({ type: 'operator', value: char });
+                } else if (char === '(' || char === ')') {
+                    tokens.push({ type: 'parentheses', value: char });
+                }
+            }
+        }
+
+        if (currentNumber !== '') {
+            tokens.push({ type: 'number', value: parseFloat(currentNumber) });
+        }
+
+        return tokens;
     }
 })
