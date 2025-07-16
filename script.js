@@ -96,4 +96,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return tokens;
     }
+
+
+
+    function getPrecedence(operator) {
+        switch (operator) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+
+    // infix to postfix conversion
+    function infixToPostfix(tokens) {
+        const output = [];
+        const operators = [];
+
+        for (let token of tokens) {
+            if (token.type === 'number') {
+                output.push(token);
+            } else if (token.type === 'operator') {
+                while (operators.length > 0 &&
+                    operators[operators.length - 1].type === 'operator' &&
+                    getPrecedence(operators[operators.length - 1].value) >= getPrecedence(token.value)) {
+                    output.push(operators.pop());
+                }
+                operators.push(token);
+            } else if (token.value === '(') {
+                operators.push(token);
+            } else if (token.value === ')') {
+                while (operators.length > 0 && operators[operators.length - 1].value !== '(') {
+                    output.push(operators.pop());
+                }
+                operators.pop();
+            }
+        }
+
+        while (operators.length > 0) {
+            output.push(operators.pop());
+        }
+
+        return output;
+    }
 })
