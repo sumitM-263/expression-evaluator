@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cleanExpression === '') {
             return {
                 valid: false,
-                error: `Expression can't be empty`;
+                error: `Expression can't be empty`
             }
         }
 
