@@ -207,6 +207,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // to display steps
+    function displaySteps() {
+    stepsList.innerHTML = '';
+
+    calculationSteps.forEach((step, index) => {
+        const stepElement = document.createElement('div');
+        stepElement.className = 'step-item';
+        stepElement.style.animationDelay = `${index * 0.1}s`;
+
+        stepElement.innerHTML = `
+                    <div class="step-number">${index + 1}</div>
+                    <div class="step-details">
+                        <div class="step-expression">${step.expression}</div>
+                        <div class="step-description">${step.description}</div>
+                    </div>
+                    ${step.result !== '' ? `<div class="step-result">= ${step.result}</div>` : ''}
+                `;
+
+        stepsList.appendChild(stepElement);
+    });
+
+    stepsSection.style.display = 'block';
+}
 
 })
 
