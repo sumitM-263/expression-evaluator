@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let calculationHistory = [];
+    let calculationSteps = [];
 
     const expressionInput = document.getElementById('expressionInput');
     const evaluateBtn = document.getElementById('evaluateBtn');
@@ -144,4 +146,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return output;
     }
+
+
+    // function to record each step
+    function recordStep(expression, description, result = '') {
+        calculationSteps.push({
+            expression: expression,
+            description: description,
+            result: result
+        });
+    }
+
+    function evaluatePostfixWithSteps(postfixTokens) {
+        const stack = [];
+
+        for (let token of postfixTokens) {
+            if (token.type === 'number') {
+                stack.push(token.value);
+                recordStep(`Push ${token.value}`, `Stack: [${stack.join(', ')}]`);
+            } else if (token.type === 'operator') {
+                const b = stack.pop();
+                const a = stack.pop();
+
+                let result;
+                switch (token.value) {
+                    case '+': result = a + b; break;
+                    case '-': result = a - b; break;
+                    case '*': result = a * b; break;
+                    case '/':
+                        if (b === 0) throw new Error('Division by zero');
+                        result = a / b;
+                        break;
+                    default:
+                        throw new Error('Unknown operator: ' + token.value);
+                }
+
+                stack.push(result);
+                recordStep(`${a} ${token.value} ${b} = ${result}`, `Stack: [${stack.join(', ')}]`, result);
+            }
+        }
+
+        return stack[0];
+    }
+
+    function evaluateWithSteps(expression) {
+        calculationSteps = [];
+
+        recordStep(expression, 'Original expression');
+
+        const tokens = tokenize(expression);
+        recordStep(tokens.map(t => t.value).join(' '), 'Tokenized expression');
+
+        const postfixTokens = infixToPostfix(tokens);
+        recordStep(postfixTokens.map(t => t.value).join(' '), 'Converted to postfix notation');
+
+        const result = evaluatePostfixWithSteps(postfixTokens);
+        recordStep('Final Result', 'Calculation complete!', result);
+
+        return result;
+    }
+
+
+
 })
+
