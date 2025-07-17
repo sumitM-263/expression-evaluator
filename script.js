@@ -209,14 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // to display steps
     function displaySteps() {
-    stepsList.innerHTML = '';
+        stepsList.innerHTML = '';
 
-    calculationSteps.forEach((step, index) => {
-        const stepElement = document.createElement('div');
-        stepElement.className = 'step-item';
-        stepElement.style.animationDelay = `${index * 0.1}s`;
+        calculationSteps.forEach((step, index) => {
+            const stepElement = document.createElement('div');
+            stepElement.className = 'step-item';
+            stepElement.style.animationDelay = `${index * 0.1}s`;
 
-        stepElement.innerHTML = `
+            stepElement.innerHTML = `
                     <div class="step-number">${index + 1}</div>
                     <div class="step-details">
                         <div class="step-expression">${step.expression}</div>
@@ -225,11 +225,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${step.result !== '' ? `<div class="step-result">= ${step.result}</div>` : ''}
                 `;
 
-        stepsList.appendChild(stepElement);
-    });
+            stepsList.appendChild(stepElement);
+        });
 
-    stepsSection.style.display = 'block';
-}
+        stepsSection.style.display = 'block';
+    }
+
+    function addToHistory(expression, result) {
+        calculationHistory.unshift({
+            expression: expression,
+            result: result,
+            timestamp: new Date()
+        });
+
+        if (calculationHistory.length > 10) {
+            calculationHistory.pop();
+        }
+
+        updateHistoryDisplay();
+    }
+
+    function updateHistoryDisplay() {
+        historyList.innerHTML = '';
+
+        if (calculationHistory.length === 0) {
+            historyList.innerHTML = '<div class="empty-history">No calculations yet. Start by entering an expression above!</div>';
+            return;
+        }
+
+        calculationHistory.forEach(item => {
+            const historyElement = document.createElement('div');
+            historyElement.className = 'history-item';
+
+            const timeString = item.timestamp.toLocaleTimeString();
+
+            historyElement.innerHTML = `
+                    <div class="history-expression">${item.expression}</div>
+                    <div class="history-result">= ${item.result}</div>
+                    <div class="history-timestamp">${timeString}</div>
+                `;
+
+            historyElement.addEventListener('click', function () {
+                expressionInput.value = item.expression;
+                expressionInput.focus();
+            });
+
+            historyList.appendChild(historyElement);
+        });
+    }
 
 })
 
