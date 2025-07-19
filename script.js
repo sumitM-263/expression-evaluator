@@ -297,6 +297,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    expressionInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            evaluateBtn.click();
+        } else if (event.key === 'Escape') {
+            clearBtn.click();
+        }
+    });
 
 })
 
