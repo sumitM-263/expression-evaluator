@@ -231,6 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         stepsSection.style.display = 'block';
     }
 
+
+    // functions to manage the history
     function addToHistory(expression, result) {
         calculationHistory.unshift({
             expression: expression,
@@ -273,6 +275,28 @@ document.addEventListener('DOMContentLoaded', () => {
             historyList.appendChild(historyElement);
         });
     }
+
+
+    // real-time validation
+    expressionInput.addEventListener('input', function () {
+        const expression = this.value;
+        const validation = validateExpression(expression);
+
+        if (expression === '') {
+            this.classList.remove('error', 'valid');
+            errorMessage.classList.remove('show');
+        } else if (validation.valid) {
+            this.classList.remove('error');
+            this.classList.add('valid');
+            errorMessage.classList.remove('show');
+        } else {
+            this.classList.remove('valid');
+            this.classList.add('error');
+            errorMessage.textContent = validation.error;
+            errorMessage.classList.add('show');
+        }
+    });
+
 
 })
 
