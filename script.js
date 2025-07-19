@@ -305,5 +305,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    evaluateBtn.addEventListener('click', function () {
+        const expression = expressionInput.value.trim();
+        const validation = validateExpression(expression);
+
+        if (!validation.valid) {
+            return;
+        }
+
+        try {
+            const result = evaluateWithSteps(expression);
+
+            // Display result
+            resultValue.textContent = result;
+            resultDisplay.style.display = 'block';
+
+            // Show steps
+            displaySteps();
+
+            // Add to history
+            addToHistory(expression, result);
+
+            // Hide any error messages
+            errorMessage.classList.remove('show');
+
+        } catch (error) {
+
+            errorMessage.textContent = error.message;
+            errorMessage.classList.add('show');
+
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 3000);
+        }
+    });
+
+    clearBtn.addEventListener('click', function () {
+        expressionInput.value = '';
+        expressionInput.classList.remove('error', 'valid');
+        resultDisplay.style.display = 'none';
+        stepsSection.style.display = 'none';
+        errorMessage.classList.remove('show');
+        expressionInput.focus();
+    });
+
+
+    stepsHeader.addEventListener('click', function () {
+        stepsContent.classList.toggle('expanded');
+        stepsToggle.classList.toggle('expanded');
+    });
+
+    clearHistory.addEventListener('click', function () {
+        calculationHistory = [];
+        updateHistoryDisplay();
+    });
+
+
+    expressionInput.focus();
+    updateHistoryDisplay();
 })
 
